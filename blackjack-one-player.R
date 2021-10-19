@@ -12,20 +12,42 @@ player <- function(player_total){
   } else F
 }
 
-#a simple function to sum the cards
-card_sum <- function(cards){
-  s <- 0
-  for(i in 1:length(cards)){
-    if(suppressWarnings(is.na(as.numeric(cards[i])))){
-      #considering ace always as 11, will change this latter
-      if(cards[i] == "A"){
-        s <- s + 11
-      } else if(cards[i] != "A"){
-        s <- s + 10
-      } 
-    } else s <- s + as.numeric(cards[i])
+#a comlpete function to sum the cards
+#there is no case where we have two high aces, but we can have up to 21 low aces
+card_sum <- function(hand){
+  
+  s_h <- 0 #high ace sum
+  s_l <- 0 #low ace sum
+  
+  aces <- sum(hand == "A") #how many aces there is
+  a <- 0 #a flag to count if the first ace was counted
+  
+  for(i in 1:length(hand)){
+    if(hand[i] %in% c("J", "Q", "K")){
+      s_h <- s_h + 10
+      s_l <- s_l + 10
+    } else if(hand[i] == "A"){
+      if(aces == 1){
+        s_h <- s_h + 11
+        s_l <- s_l + 1
+      } else if(a == 0){
+        s_h <- s_h + 11
+        s_l <- s_l + 1
+        a <- a + 1
+      } else if(a > 0){
+        s_h <- s_h + 1
+        s_l <- s_l + 1
+      }
+    } else {
+      s_h <- s_h + as.numeric(hand[i])
+      s_l <- s_l + as.numeric(hand[i])
+    }
   }
-  s
+  if(s_h > 21){
+    return(s_l)
+  } else {
+    return(max(s_h,s_l))
+  }
 }
 
 #play one round with as many decks as you wish
