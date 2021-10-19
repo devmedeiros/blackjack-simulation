@@ -25,3 +25,23 @@ We also will be considering a few different types of players:
 - card counter will count the cards and always choose the best strategy.
 
 For now, the code can only simulate one game at a time with a single newbie player.
+
+To do list:
+
+- [x] noobie player behavior
+
+- [x] dealer behavior
+
+- [x] card sum
+
+- [ ] cautious player behavior
+
+- [ ] card counter player behavior
+
+- [ ] enable multiple players
+
+- [ ] enable multiple runs of the game
+
+- [ ] make an AI player (reinforced learning)
+
+- [ ] deploy the simulation on shiny.io
