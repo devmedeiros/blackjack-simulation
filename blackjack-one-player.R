@@ -50,82 +50,97 @@ card_sum <- function(hand){
   }
 }
 
-#play one round with as many decks as you wish
-play_one_round <- function(deck){
+#play one round with as many decks as you wish and as many players
+play_one_round <- function(deck, players){
   
   cards <- rep(c(2:10, "J", "Q", "K", "A"), 4)
   total_cards <- rep(cards,deck) #total cards being played
+  total_cards_played <- 0
   
   #each row in the setup is the 'row' round of carts dealt
-  setup <- data.frame('player1' = NA, 'dealer' = NA)
   
+  a <- paste(rep("player",players),1:players,sep="")
+  b <- rep(NA,players)
+  c <- rep(F,players)
+  setup_list <- as.list(setNames(c(1,b,NA),c("round",a,"dealer")))
+  sum_list <- as.list(setNames(c(1,b,NA),c("round",a,"dealer")))
+  win_los <- as.list(setNames(c(1,c),c("round",a)))
   #if the player has lost yet
-  lost <- F
   
   sample_card <- NA
+  n <- players+2
+  m <- players+1
   
   #sampling the cards and taking them off the total_cards
   for(i in 1:2){
-    for(j in 1:2){
+    for(j in 2:n){
       sample_card <- sample(total_cards, 1)
-      setup[i,j] <- sample_card
-      total_cards <- total_cards[-which(total_cards == sample_card)]
+      total_cards_played <- total_cards_played + 1
+      setup_list[[j]][i] <- sample_card
+      total_cards <- total_cards[-which(total_cards == sample_card)[1]]
     }
   }
   
-  player_total <- card_sum(setup$player1)
-  dealer_total <- card_sum(setup$dealer)
-  
-  #is 2 because each player starts with 2 cards
-  k <- 2
-  
-  sample_card <- NA
-  
-  cat(paste0("The player total is: ", player_total), sep="\n")
-  cat(paste0("The dealer total is: ", card_sum(setup[1,2])), sep="\n")
-  
-  #player acts
-  while(player(player_total)){
-    cat(paste0("Player Hits."), sep="\n")
-    k <- k + 1
-    sample_card <- sample(total_cards, 1)
-    setup[k,1] <- sample_card
-    total_cards <- total_cards[-which(total_cards == sample_card)]
-    player_total <- card_sum(setup$player1)
-    cat(paste0(sample_card,"\n" ,"Player new total is: ", player_total), sep="\n")
+  for(u in 2:m){
+    sum_list[[u]] <- card_sum(setup_list[[u]])
   }
   
-  #test if the player has burst
-  if(player_total > 21){
-    cat(paste0("Player Burst and the dealer wins."))
-    lost <- T
-    #if the player is still in the game continue
-  } else {
-    cat(paste0("Player Stands. With a total of: ", player_total), sep="\n")
-    cat(paste0("Dealer turns card, dealer total is: ", dealer_total), sep="\n")
+  sum_list$dealer <- card_sum(setup_list$dealer)
+ 
+  #cat(paste0("The player total is: ", player_total), sep="\n")
+  #cat(paste0("The dealer total is: ", card_sum(setup_list[[n]][1])), sep="\n")
+  
+  #player acts
+  for(v in 2:m){
+    k <- 2
+    sample_card <- NA
+    while(player(sum_list[[v]])){
+      cat(paste0("Player Hits."), sep="\n")
+      k <- k + 1
+      sample_card <- sample(total_cards, 1)
+      total_cards_played <- total_cards_played + 1
+      setup_list[[v]][k] <- sample_card
+      total_cards <- total_cards[-which(total_cards == sample_card)[1]]
+      sum_list[[v]] <- card_sum(setup_list[[v]])
+      cat(paste0(sample_card,"\n" ,"Player new total is: ", sum_list[[v]]), sep="\n")
+    }
+    if(sum_list[[v]] > 21){
+      cat(paste0("Player ", a[v-1]," Burst and the dealer wins."))
+      win_los[[v]] <- T
+    } else {
+      cat(paste("Player ", a[v-1]," Stands."))
+    }
+  }
   
     k <- 2
-  
     sample_card <- NA
+    
   #dealer acts
-    while(dealer(dealer_total)){
+    while(dealer(sum_list$dealer)){
+      total_cards_played <- total_cards_played + 1
       cat(paste0("Dealer Hits."), sep="\n")
       k <- k + 1
       sample_card <- sample(total_cards, 1)
-      setup[k,2] <- sample_card
-      total_cards <- total_cards[-which(total_cards == sample_card)]
-      dealer_total <- card_sum(setup$dealer)
-      cat(paste0(sample_card, "\n","Dealer new total is: ", dealer_total), sep="\n")
+      setup_list$dealer[k] <- sample_card
+      total_cards <- total_cards[-which(total_cards == sample_card)[1]]
+      sum_list$dealer <- card_sum(setup_list$dealer)
+      cat(paste0(sample_card, "\n","Dealer new total is: ", sum_list$dealer), sep="\n")
     }
     
-    cat(paste0("Dealer Stands. With a total of: ", dealer_total), sep="\n")
+    cat(paste0("Dealer Stands. With a total of: ", sum_list$dealer), sep="\n")
     
     #checking who won
-    if(dealer_total > 21){
-      cat(paste0("The dealer Burst. The player wins."))
-    } else if(dealer_total >= player_total){
-      cat(paste0("Dealer wins."))
-      lost = T #now this is redundant
+    if(sum_list$dealer > 21){
+      cat(paste0("The dealer Burst. The remaining players wins."), sep="\n")
+    } else {
+      for(l in 2:m){
+        if(sum_list$dealer >= sum_list[[l]]){
+          cat(paste0("Dealer wins. Against player ", a[l-1]), sep="\n")
+          win_los[[l]] <- T #now this is redundant
+      } else if(sum_list[[l]] > sum_list$dealer){
+          cat(paste0("Player ", a[l-1]," wins."), sep="\n")
+        }
+      }
     }
+    return(length(total_cards))
   }
-}
