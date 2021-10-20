@@ -26,7 +26,7 @@ We also will be considering a few different types of players:
 
 For now, the code can only simulate one game at a time with a single newbie player.
 
-To do list:
+### To do list:
 
 - [x] noobie player behavior
 
@@ -38,7 +38,7 @@ To do list:
 
 - [ ] card counter player behavior
 
-- [ ] enable multiple players
+- [x] enable multiple players
 
 - [ ] enable multiple runs of the game
 
