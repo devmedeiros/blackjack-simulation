@@ -8,13 +8,11 @@ The player on the left goes first and can choose between `stand` or `hit`. If th
 
 After all, players have been served, the dealer starts by turning the face-down card up. If its total is 17 or more, it must stand. Else the dealer will hit, the dealer will continue to hit until they have a total of 17 or more. If the dealer has an ace and counting it as 11 would bring the total to 17 or more but less than 21, they must count it as 11 and stand.
 
-The betting is placed before the cards are dealt.
-
 Now for the shuffling of the cards, we can consider a couple of scenarios:
 
 - shuffle every round.
 
-- shuffle until there is only 60 to 75 cards left.
+- shuffle when there is only less than 75 cards left.
 
 We also will be considering a few different types of players:
 
@@ -28,7 +26,7 @@ For now, the code can only simulate one game at a time with a single newbie play
 
 ### To do list:
 
-- [x] noobie player behavior
+- [x] newbie player behavior
 
 - [x] dealer behavior
 
@@ -40,7 +38,7 @@ For now, the code can only simulate one game at a time with a single newbie play
 
 - [x] enable multiple players
 
-- [ ] enable multiple runs of the game
+- [x] enable multiple runs of the game
 
 - [ ] make an AI player (reinforced learning)
 
