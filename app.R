@@ -1,9 +1,18 @@
+#
+# This is a Shiny web application. You can run the application by clicking
+# the 'Run App' button above.
+#
+# Find out more about building applications with Shiny here:
+#
+#    http://shiny.rstudio.com/
+#
+
 library(shiny)
 library(shinythemes)
 
 
 # Define UI for application that draws a histogram
-shinyUI(fluidPage(
+ui <- shinyUI(fluidPage(
     
     theme = shinytheme("sandstone"),
     
@@ -38,8 +47,7 @@ shinyUI(fluidPage(
     )
 ))
 
-#Define server logic
-shinyServer(function(input, output) {
+server <- shinyServer(function(input, output) {
     
     source(file = "https://raw.githubusercontent.com/devmedeiros/blackjack-simulation/main/blackjack_functions.R", local = T)
     
@@ -59,8 +67,8 @@ shinyServer(function(input, output) {
     
     output$losRt <- renderDataTable({
         round(data.frame('round' = simulation()$lost$round,
-                   sapply(simulation()$lost[,-1],
-                          function(x) cummean(x))), 3)
+                         sapply(simulation()$lost[,-1],
+                                function(x) cummean(x))), 3)
     })
     
     output$loseRate <- renderPlot({
@@ -77,3 +85,7 @@ shinyServer(function(input, output) {
     })
     
 })
+
+
+# Run the application 
+shinyApp(ui = ui, server = server)
