@@ -5,7 +5,7 @@ dealer <- function(dealer_total) {
   } else T
 }
 
-###############################################################################################
+################################################################################
 
 #should the player hit? (newbie)
 newbie <- function(player_total) {
@@ -14,7 +14,6 @@ newbie <- function(player_total) {
   } else return(F)
 } #nb
 
-#should the player hit? (cautious)
 cautious <- function(player_total) {
   u <- runif(1)
   if (player_total < 17){
@@ -24,23 +23,19 @@ cautious <- function(player_total) {
   } else return(F)
 } #ct
 
-###############################################################################################
+strategist <- function(player_total, dealer_total) {
+  if (player_total >= 17) {
+    return(F)
+  } else if (player_total >= 13 & dealer_total <= 6) {
+    return(F)
+  } else if (player_total == 12 & dealer_total %in% 4:6) {
+    return(F)
+  } else if (player_total <= 11) {
+    return(T)
+  } else return(F)
+} #st
 
-#card count sum
-count_sum <- function(cards) {
-  count <- 0
-  for (c in 1:length(cards)) {
-    if (cards[c] %in% c("J", "Q", "K", "A")) {
-      count <- count - 1
-    } else if (is.numeric(cards[c]) == 10) {
-      count <- count - 1
-    } else if (is.numeric(cards[c]) <= 6) {
-      count <- count + 1
-    }
-  }
-}
-
-###############################################################################################
+################################################################################
 
 #a function to sum the cards
 card_sum <- function(hand) {
@@ -79,11 +74,12 @@ card_sum <- function(hand) {
   }
 }
 
-###############################################################################################
+################################################################################
 
 #deck_n #of decks
-#deck_c current cards in the deck
+#ds deck summary
 #players #of players
+
 play_one_round <- function(deck_n, players, deck_c = 0, archetype = rep("nb", players)) {
   
   if (length(deck_c) < 75){
@@ -151,6 +147,15 @@ play_one_round <- function(deck_n, players, deck_c = 0, archetype = rep("nb", pl
         setup_list[[v]][k] <- sample_card #adding the new card in the setup_list
         total_cards <- total_cards[-which(total_cards == sample_card)[1]]
         sum_list[[v]] <- card_sum(setup_list[[v]]) #updating the sum
+      } 
+    } else if (archetype[v] == "st") {
+      while (strategist(sum_list[[v]], setup_list$dealer[1])) {
+        k <- k + 1
+        sample_card <- sample(total_cards, 1)
+        total_cards_played <- total_cards_played + 1
+        setup_list[[v]][k] <- sample_card #adding the new card in the setup_list
+        total_cards <- total_cards[-which(total_cards == sample_card)[1]]
+        sum_list[[v]] <- card_sum(setup_list[[v]]) #updating the sum
       }
     }
     #checking if the v player has burst
@@ -180,12 +185,6 @@ play_one_round <- function(deck_n, players, deck_c = 0, archetype = rep("nb", pl
     }
   }
   
-  len <- 0
-  
-  for (t in 1:n) {
-    len[t] <- length(setup_list[[t]])
-  }
-  
   setup <- as.data.frame(lapply(setup_list, "length<-", max(lengths(setup_list))))
   output <- list("total_cards" = total_cards,
                  "setup" = setup,
@@ -194,7 +193,9 @@ play_one_round <- function(deck_n, players, deck_c = 0, archetype = rep("nb", pl
   return(output)
 }
 
-###############################################################################################
+play_one_round(8,4,archetype = c("nb","st","ct","nb"))
+
+################################################################################
 
 play_multiple_rounds <- function(deck_n, players, rounds, archetype){
   
