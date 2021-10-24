@@ -1,4 +1,4 @@
-# blackjack-simulation
+# Blackjack Simulation
 
 Considering the following rules for Blackjack, I'll make a function to simulate `n` runs.
 
@@ -16,30 +16,10 @@ Now for the shuffling of the cards, we can consider a couple of scenarios:
 
 We also will be considering a few different types of players:
 
-- newbie will play at random
+- **newbie** will play at random
 
-- cautious will ask to hit when the total is below 17 and has a small chance (0.05) to hit when the total is 17, 18, or 19.
+- **cautious** will ask to hit when the total is below 17 and has a small chance (0.05) to hit when the total is 17, 18, or 19.
 
-- card counter will count the cards and always choose the best strategy.
+- **strategist** will ask to hit depending on the dealer's total (the dealer first card).
 
-For now, the code can only simulate one game at a time with a single newbie player.
-
-### To do list:
-
-- [x] newbie player behavior
-
-- [x] dealer behavior
-
-- [x] card sum
-
-- [ ] cautious player behavior
-
-- [ ] card counter player behavior
-
-- [x] enable multiple players
-
-- [x] enable multiple runs of the game
-
-- [ ] make an AI player (reinforced learning)
-
-- [ ] deploy the simulation on shiny.io
+To run a shiny app with an application of this simulation just run: `runGitHub("blackjack-simulation", "devmedeiros", ref = "main")`.
