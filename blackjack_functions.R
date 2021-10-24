@@ -77,7 +77,6 @@ card_sum <- function(hand) {
 ################################################################################
 
 #deck_n #of decks
-#ds deck summary
 #players #of players
 
 play_one_round <- function(deck_n, players, deck_c = 0, archetype = rep("nb", players)) {
@@ -93,7 +92,12 @@ play_one_round <- function(deck_n, players, deck_c = 0, archetype = rep("nb", pl
     total_cards_played <- (52*deck_n)-length(deck_c)
   }
   
-  players_name <- paste(rep("player", players), 1:players, sep="")
+  #uncomment this to run for as many players as you want
+  #players_name <- paste(rep("player", players), 1:players, sep="")
+  
+  #comment this to run for as many players as you want
+  players_name <- paste(rep("player", players), archetype, sep=" ")
+  
   players_na <- rep(NA, players) #first value for players
   players_win_los <- rep(0, players) #1 = player lost
   
@@ -192,8 +196,6 @@ play_one_round <- function(deck_n, players, deck_c = 0, archetype = rep("nb", pl
                  "archetype" = archetype)
   return(output)
 }
-
-play_one_round(8,4,archetype = c("nb","st","ct","nb"))
 
 ################################################################################
 
